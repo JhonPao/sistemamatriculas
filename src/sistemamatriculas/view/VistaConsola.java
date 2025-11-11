@@ -20,17 +20,17 @@ public class VistaConsola {
      */
     public void iniciar() {
         System.out.println("=============================================");
-        System.out.println("==  SISTEMA DE GESTIÓN DE MATRÍCULA v2.0   ==");
+        System.out.println("==  SISTEMA DE GESTION DE MATRICULA v2.0   ==");
         System.out.println("=============================================");
         
         while (true) {
-            System.out.println("\n--- MENÚ PRINCIPAL ---");
-            System.out.println("[1] Proceso de Matrícula");
-            System.out.println("[2] Gestión de Estudiantes");
-            System.out.println("[3] Gestión Académica (Aulas)");
+            System.out.println("\n--- MENU PRINCIPAL ---");
+            System.out.println("[1] Proceso de Matricula");
+            System.out.println("[2] Gestion de Estudiantes");
+            System.out.println("[3] Gestion Academica (Aulas)");
             System.out.println("[4] Reportes y Consultas");
             System.out.println("[5] Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
 
             String opcion = scanner.nextLine();
             switch (opcion) {
@@ -47,10 +47,10 @@ public class VistaConsola {
                     menuReportes();
                     break;
                 case "5":
-                    System.out.println("Gracias por usar el sistema. ¡Adiós!");
+                    System.out.println("Gracias por usar el sistema. ¡Adios!");
                     return;
                 default:
-                    System.out.println("Opción no válida. Por favor, intente de nuevo.");
+                    System.out.println("Opcion no valida. Por favor, intente de nuevo.");
             }
         }
     }
@@ -60,9 +60,9 @@ public class VistaConsola {
         while (true) {
             System.out.println("\n--- PROCESO DE MATRÍCULA ---");
             System.out.println("[1] Matricular Alumno (Nuevo o Antiguo)");
-            System.out.println("[2] Ver Ficha de Matrícula (por DNI)");
-            System.out.println("[3] Anular Matrícula (por DNI)");
-            System.out.println("[4] < Volver al Menú Principal");
+            System.out.println("[2] Ver Ficha de Matricula (por DNI)");
+            System.out.println("[3] Anular Matricula (por DNI)");
+            System.out.println("[4]  Volver al Menu Principal");
             System.out.print("Seleccione: ");
             String opcion = scanner.nextLine();
 
@@ -79,7 +79,7 @@ public class VistaConsola {
                 case "4":
                     return; // Vuelve al menú principal
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
         }
     }
@@ -91,7 +91,7 @@ public class VistaConsola {
             System.out.println("[1] Registrar Nuevo Alumno");
             System.out.println("[2] Buscar Estudiante (por DNI)");
             System.out.println("[3] Gestionar Apoderados");
-            System.out.println("[4] < Volver al Menú Principal");
+            System.out.println("[4] < Volver al Menu Principal");
             System.out.print("Seleccione: ");
             String opcion = scanner.nextLine();
 
@@ -108,19 +108,19 @@ public class VistaConsola {
                 case "4":
                     return; // Vuelve al menú principal
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
         }
     }
 
     // --- MENÚ [3] GESTIÓN ACADÉMICA ---
     private void menuGestionAcademica() {
-        System.out.println("\n(Gestión para el Año Académico 2025)");
+        System.out.println("\n(Gestión para el Año Academico 2025)");
         while (true) {
-            System.out.println("\n--- GESTIÓN ACADÉMICA (AULAS) ---");
+            System.out.println("\n--- GESTION ACADEMICA (AULAS) ---");
             System.out.println("[1] Crear Aulas (Ej: 1ro 'A', 30 vacantes)");
             System.out.println("[2] Listar Aulas y Vacantes Disponibles");
-            System.out.println("[3] < Volver al Menú Principal");
+            System.out.println("[3] < Volver al Menu Principal");
             System.out.print("Seleccione: ");
             String opcion = scanner.nextLine();
 
@@ -134,7 +134,7 @@ public class VistaConsola {
                 case "3":
                     return; // Vuelve al menú principal
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
         }
     }
@@ -144,9 +144,9 @@ public class VistaConsola {
         while (true) {
             System.out.println("\n--- REPORTES Y CONSULTAS ---");
             System.out.println("[1] Lista de Alumnos por Aula");
-            System.out.println("[2] Generar Constancia de Matrícula (por DNI)");
+            System.out.println("[2] Generar Constancia de Matricula (por DNI)");
             System.out.println("[3] Lista General de Alumnos Matriculados (Año 2025)");
-            System.out.println("[4] < Volver al Menú Principal");
+            System.out.println("[4] < Volver al Menu Principal");
             System.out.print("Seleccione: ");
             String opcion = scanner.nextLine();
 
@@ -163,7 +163,7 @@ public class VistaConsola {
                 case "4":
                     return; // Vuelve al menú principal
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
         }
     }
@@ -172,27 +172,27 @@ public class VistaConsola {
 
     // [1] Matricular
     private void uiMatricularAlumno() {
-        System.out.println("\n--- Nueva Matrícula ---");
+        System.out.println("\n--- Nueva Matricula ---");
         try {
             Estudiante est = seleccionarEstudianteUI("Ingrese DNI del estudiante a matricular:");
             if (est == null) {
-                System.out.println("No se encontró estudiante. Registrelo primero en 'Gestión de Estudiantes'.");
+                System.out.println("No se encontro estudiante. Registrelo primero en 'Gestion de Estudiantes'.");
                 return;
             }
             System.out.println("Estudiante: " + est.getNombreCompleto());
 
-            Aula aula = seleccionarAulaUI("Seleccione el aula para la matrícula:");
+            Aula aula = seleccionarAulaUI("Seleccione el aula para la matricula:");
             if (aula == null) {
-                System.out.println("No se seleccionó aula. Operación cancelada.");
+                System.out.println("No se selecciono aula. Operación cancelada.");
                 return;
             }
             System.out.println("Aula: " + aula.getNombreCompleto());
             
-            System.out.print("Año Académico (Ej: 2025): ");
+            System.out.print("Año Academico (Ej: 2025): ");
             String anio = scanner.nextLine();
             
             Matricula nueva = service.matricularEstudiante(est.getIdEstudiante(), aula.getIdAula(), anio);
-            System.out.println("¡MATRÍCULA EXITOSA!");
+            System.out.println("¡MATRICULA EXITOSA!");
             System.out.println("Ficha: " + nueva);
 
         } catch (Exception e) {
@@ -202,15 +202,15 @@ public class VistaConsola {
     
     // [1] Ver Ficha
     private void uiVerFichaMatricula() {
-        System.out.println("\n--- Consultar Ficha de Matrícula ---");
+        System.out.println("\n--- Consultar Ficha de Matricula ---");
         System.out.print("DNI del Estudiante: ");
         String dni = scanner.nextLine();
-        System.out.print("Año Académico (Ej: 2025): ");
+        System.out.print("Año Academico (Ej: 2025): ");
         String anio = scanner.nextLine();
         
         Matricula m = service.getFichaMatricula(dni, anio);
         if (m == null) {
-            System.out.println("No se encontró matrícula para el DNI " + dni + " en el año " + anio);
+            System.out.println("No se encontró matricula para el DNI " + dni + " en el año " + anio);
         } else {
             System.out.println("Ficha encontrada: " + m);
         }
@@ -218,15 +218,15 @@ public class VistaConsola {
     
     // [1] Anular Matrícula
     private void uiAnularMatricula() {
-        System.out.println("\n--- Anular Matrícula ---");
+        System.out.println("\n--- Anular Matricula ---");
         System.out.print("DNI del Estudiante: ");
         String dni = scanner.nextLine();
-        System.out.print("Año Académico de la matrícula (Ej: 2025): ");
+        System.out.print("Año Academico de la matricula (Ej: 2025): ");
         String anio = scanner.nextLine();
         
         try {
             Matricula m = service.anularMatricula(dni, anio);
-            System.out.println("¡Matrícula ANULADA con éxito!");
+            System.out.println("¡Matricula ANULADA con exito!");
             System.out.println("Estado final: " + m);
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -239,7 +239,7 @@ public class VistaConsola {
         try {
             Apoderado apo = seleccionarApoderadoUI("Ingrese DNI del Apoderado (o 0 para registrar uno nuevo):");
             if (apo == null) {
-                System.out.println("No se seleccionó apoderado. Registre uno primero.");
+                System.out.println("No se selecciono apoderado. Registre uno primero.");
                 return;
             }
             
@@ -254,7 +254,7 @@ public class VistaConsola {
             String fechaNac = scanner.nextLine();
 
             Estudiante nuevo = service.registrarEstudiante(nombres, apellidos, dni, fechaNac, apo.getIdApoderado());
-            System.out.println("¡Estudiante registrado con éxito! ID: " + nuevo.getIdEstudiante());
+            System.out.println("¡Estudiante registrado con exito! ID: " + nuevo.getIdEstudiante());
         
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -268,7 +268,7 @@ public class VistaConsola {
         String dni = scanner.nextLine();
         Estudiante e = service.buscarEstudiantePorDni(dni);
         if (e == null) {
-            System.out.println("No se encontró estudiante con DNI " + dni);
+            System.out.println("No se encontro estudiante con DNI " + dni);
         } else {
             System.out.println("Estudiante encontrado:");
             System.out.println(e);
@@ -279,7 +279,7 @@ public class VistaConsola {
     
     // [2] Gestionar Apoderados
     private void uiGestionarApoderados() {
-        System.out.println("\n--- Gestión de Apoderados ---");
+        System.out.println("\n--- Gestion de Apoderados ---");
         System.out.println("[1] Registrar Apoderado");
         System.out.println("[2] Buscar Apoderado (por DNI)");
         System.out.print("Seleccione: ");
@@ -294,7 +294,7 @@ public class VistaConsola {
             System.out.print("Relación (Padre/Madre/Tutor): "); String rel = scanner.nextLine();
             try {
                 Apoderado nuevo = service.registrarApoderado(nombres, apellidos, dni, tel, rel);
-                System.out.println("¡Éxito! Apoderado registrado: " + nuevo);
+                System.out.println("¡Exito! Apoderado registrado: " + nuevo);
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
             }
@@ -312,14 +312,14 @@ public class VistaConsola {
         try {
             Profesor tutor = seleccionarProfesorUI("Seleccione el Profesor (Tutor) para esta aula:");
             if (tutor == null) {
-                System.out.println("No hay profesores. Registre uno primero (Función no implementada).");
+                System.out.println("No hay profesores. Registre uno primero (Funcion no implementada).");
                 return;
             }
             
             System.out.println("Tutor seleccionado: " + tutor.getNombreCompleto());
             System.out.print("Nombre del Grado (Ej: 1ro Primaria): ");
             String grado = scanner.nextLine();
-            System.out.print("Nombre de la Sección (Ej: A): ");
+            System.out.print("Nombre de la Seccion (Ej: A): ");
             String seccion = scanner.nextLine();
             System.out.print("N° de Vacantes Totales (Ej: 30): ");
             int vacantes = Integer.parseInt(scanner.nextLine());
@@ -329,7 +329,7 @@ public class VistaConsola {
             System.out.println(nueva);
         
         } catch (NumberFormatException e) {
-            System.err.println("Error: El número de vacantes debe ser un número.");
+            System.err.println("Error: El numero de vacantes debe ser un numero.");
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -354,7 +354,7 @@ public class VistaConsola {
         System.out.println("\n--- Reporte: Alumnos por Aula ---");
         Aula aula = seleccionarAulaUI("Seleccione el aula para el reporte:");
         if (aula == null) {
-            System.out.println("Operación cancelada.");
+            System.out.println("Operacion cancelada.");
             return;
         }
         
@@ -377,12 +377,12 @@ public class VistaConsola {
         System.out.println("\n--- Generar Constancia de Matrícula ---");
         System.out.print("DNI del Estudiante: ");
         String dni = scanner.nextLine();
-        System.out.print("Año Académico (Ej: 2025): ");
+        System.out.print("Año Academico (Ej: 2025): ");
         String anio = scanner.nextLine();
         
         Matricula m = service.getFichaMatricula(dni, anio);
         if (m == null) {
-            System.out.println("No se encontró matrícula.");
+            System.out.println("No se encontro matricula.");
             return;
         }
         
@@ -390,7 +390,7 @@ public class VistaConsola {
         Aula a = service.buscarAulaPorId(m.getIdAula());
         Apoderado apo = service.buscarApoderadoPorId(e.getIdApoderado());
         
-        System.out.println("\n--- CONSTANCIA DE MATRÍCULA " + anio + " ---");
+        System.out.println("\n--- CONSTANCIA DE MATRICULA " + anio + " ---");
         System.out.println("Se deja constancia que el/la estudiante:");
         System.out.println("  ALUMNO: " + e.getNombreCompleto());
         System.out.println("  DNI: " + e.getDni());
@@ -398,7 +398,7 @@ public class VistaConsola {
         System.out.println("  AULA: " + a.getNombreCompleto());
         System.out.println("El día: " + m.getFechaMatricula());
         System.out.println("Apoderado: " + apo.getNombreCompleto() + " (DNI: " + apo.getDni() + ")");
-        System.out.println("ESTADO DE MATRÍCULA: " + m.getEstado());
+        System.out.println("ESTADO DE MATRICULA: " + m.getEstado());
         System.out.println("-------------------------------------");
     }
 
@@ -407,7 +407,7 @@ public class VistaConsola {
         System.out.println("\n--- Reporte: General de Matriculados (Año 2025) ---");
         ArrayList<Matricula> matriculas = service.getMatriculasActivas("2025");
         if (matriculas.isEmpty()) {
-            System.out.println("No hay matrículas activas en 2025.");
+            System.out.println("No hay matriculas activas en 2025.");
             return;
         }
         
@@ -452,10 +452,10 @@ public class VistaConsola {
             int id = Integer.parseInt(scanner.nextLine());
             if (id == 0) return null;
             Aula a = service.buscarAulaPorId(id);
-            if (a == null) System.out.println("ID de aula no válido.");
+            if (a == null) System.out.println("ID de aula no valido.");
             return a;
         } catch (NumberFormatException e) {
-            System.out.println("Entrada no válida.");
+            System.out.println("Entrada no valida.");
             return null;
         }
     }
@@ -478,10 +478,10 @@ public class VistaConsola {
             int id = Integer.parseInt(scanner.nextLine());
             if (id == 0) return null;
             Profesor p = service.buscarProfesorPorId(id);
-            if (p == null) System.out.println("ID de profesor no válido.");
+            if (p == null) System.out.println("ID de profesor no valido.");
             return p;
         } catch (NumberFormatException e) {
-            System.out.println("Entrada no válida.");
+            System.out.println("Entrada no valida.");
             return null;
         }
     }
