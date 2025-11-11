@@ -37,6 +37,6 @@ public class Matricula {
 
     @Override
     public String toString() {
-        return "Matricula [ID=" + idMatricula + " | EstudianteID=" + idEstudiante + " | AulaID=" + idAula + " | Año=" + anioAcademico + " | Estado=" + estado + "]";
+        return "Matricula [ID=" + idMatricula + " | IDEstudiante=" + idEstudiante + " | AulaID=" + idAula + " | Año=" + anioAcademico + " | Estado=" + estado + "]";
     }
 }
