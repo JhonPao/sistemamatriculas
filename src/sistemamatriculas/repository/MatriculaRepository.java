@@ -4,9 +4,6 @@ import sistemamatriculas.model.Matricula;
 import java.io.*;
 import java.util.ArrayList;
 
-/**
- * Se encarga de guardar y leer los datos de Matrículas (Matriculas.txt).
- */
 public class MatriculaRepository {
     
     private final String RUTA_ARCHIVO = "Matriculas.txt";
@@ -26,7 +23,7 @@ public class MatriculaRepository {
                     Matricula m = new Matricula(
                         Integer.parseInt(d[0]), // idMatricula
                         Integer.parseInt(d[1]), // idEstudiante
-                        Integer.parseInt(d[2]), // idSeccion
+                        Integer.parseInt(d[2]), // idAula (antes idSeccion)
                         d[3], // anioAcademico
                         d[4], // fechaMatricula
                         d[5]  // estado
@@ -45,7 +42,7 @@ public class MatriculaRepository {
             for (Matricula m : lista) {
                 String linea = m.getIdMatricula() + ";" +
                                m.getIdEstudiante() + ";" +
-                               m.getIdSeccion() + ";" +
+                               m.getIdAula() + ";" + // antes idSeccion
                                m.getAnioAcademico() + ";" +
                                m.getFechaMatricula() + ";" +
                                m.getEstado();

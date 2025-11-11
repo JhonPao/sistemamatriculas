@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/CursoRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/EstudianteRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Estudiante.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/view/VistaConsola.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Aula.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/AulaRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/ApoderadoRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/Principal.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/MatriculaRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Apoderado.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Profesor.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Matricula.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/repository/ProfesorRepository.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/service/MatriculaService.java</file>
+            <file>file:/C:/Users/jhonp/OneDrive/Documentos/NetBeansProjects/sistemamatriculas/src/sistemamatriculas/model/Curso.java</file>
+        </group>
+    </open-files>
+</project-private>

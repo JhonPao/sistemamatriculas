@@ -1,6 +1,6 @@
 package sistemamatriculas;
 
-// Importa las piezas clave
+// Importa las piezas clave de tus otros paquetes
 import sistemamatriculas.service.MatriculaService;
 import sistemamatriculas.view.VistaConsola;
 
@@ -10,6 +10,10 @@ import sistemamatriculas.view.VistaConsola;
  */
 public class Principal {
 
+    /**
+     * El método main() es el punto de entrada de la aplicación.
+     * @param args los argumentos de la línea de comandos (no los usamos)
+     */
     public static void main(String[] args) {
         
         // 1. Crear el "Cerebro":

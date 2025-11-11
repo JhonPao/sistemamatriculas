@@ -1,253 +1,293 @@
 package sistemamatriculas.service;
 
-// Importa todos tus modelos y repositorios
 import sistemamatriculas.model.*;
 import sistemamatriculas.repository.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Esta es la clase "Cerebro" de la aplicación.
- * Actúa como una fachada que coordina toda la lógica de negocio
- * y es la ÚNICA clase con la que la VISTA (consola/GUI) debe hablar.
- */
 public class MatriculaService {
 
-    // --- 1. Atributos (los 7 Repositorios) ---
+    // --- Repositorios ---
     private final ApoderadoRepository apoderadoRepo;
     private final EstudianteRepository estudianteRepo;
     private final ProfesorRepository profesorRepo;
-    private final CursoRepository cursoRepo;
-    private final GradoRepository gradoRepo;
-    private final SeccionRepository seccionRepo;
+    private final AulaRepository aulaRepo; // Reemplaza a Grado/Seccion
     private final MatriculaRepository matriculaRepo;
+    // (Omitimos CursoRepository por simplicidad, se puede añadir luego)
 
-    // --- 2. Atributos (Listas en Memoria) ---
-    // (Guardamos los datos aquí mientras el programa corre)
+    // --- Listas en Memoria ---
     private final ArrayList<Apoderado> listaApoderados;
     private final ArrayList<Estudiante> listaEstudiantes;
     private final ArrayList<Profesor> listaProfesores;
-    private final ArrayList<Curso> listaCursos;
-    private final ArrayList<Grado> listaGrados;
-    private final ArrayList<Seccion> listaSecciones;
+    private final ArrayList<Aula> listaAulas;
     private final ArrayList<Matricula> listaMatriculas;
 
-    // --- 3. Atributos (Contadores de ID) ---
-    // (Para saber qué ID le toca al próximo registro)
+    // --- Contadores de ID ---
     private int nextApoderadoId;
     private int nextEstudianteId;
     private int nextProfesorId;
-    private int nextCursoId;
-    private int nextGradoId;
-    private int nextSeccionId;
+    private int nextAulaId;
     private int nextMatriculaId;
 
-    // --- 4. Constructor ---
-    // (Se ejecuta 1 vez cuando el programa inicia)
+    // --- Constructor ---
     public MatriculaService() {
-        // Inicializa todos los repositorios
+        // Inicializa repositorios
         this.apoderadoRepo = new ApoderadoRepository();
         this.estudianteRepo = new EstudianteRepository();
         this.profesorRepo = new ProfesorRepository();
-        this.cursoRepo = new CursoRepository();
-        this.gradoRepo = new GradoRepository();
-        this.seccionRepo = new SeccionRepository();
+        this.aulaRepo = new AulaRepository();
         this.matriculaRepo = new MatriculaRepository();
 
-        // Carga los datos de los .txt a las listas en memoria
+        // Carga datos a memoria
         this.listaApoderados = apoderadoRepo.cargarApoderados();
         this.listaEstudiantes = estudianteRepo.cargarEstudiantes();
         this.listaProfesores = profesorRepo.cargarProfesores();
-        this.listaCursos = cursoRepo.cargarCursos();
-        this.listaGrados = gradoRepo.cargarGrados();
-        this.listaSecciones = seccionRepo.cargarSecciones();
+        this.listaAulas = aulaRepo.cargarAulas();
         this.listaMatriculas = matriculaRepo.cargarMatriculas();
 
-        // Calcula los siguientes IDs disponibles
-        // (Toma el ID del último ítem y le suma 1)
-        this.nextApoderadoId = listaApoderados.isEmpty() ? 1 : listaApoderados.get(listaApoderados.size() - 1).getIdApoderado() + 1;
-        this.nextEstudianteId = listaEstudiantes.isEmpty() ? 1 : listaEstudiantes.get(listaEstudiantes.size() - 1).getIdEstudiante() + 1;
-        this.nextProfesorId = listaProfesores.isEmpty() ? 1 : listaProfesores.get(listaProfesores.size() - 1).getIdProfesor() + 1;
-        this.nextCursoId = listaCursos.isEmpty() ? 1 : listaCursos.get(listaCursos.size() - 1).getIdCurso() + 1;
-        this.nextGradoId = listaGrados.isEmpty() ? 1 : listaGrados.get(listaGrados.size() - 1).getIdGrado() + 1;
-        this.nextSeccionId = listaSecciones.isEmpty() ? 1 : listaSecciones.get(listaSecciones.size() - 1).getIdSeccion() + 1;
-        this.nextMatriculaId = listaMatriculas.isEmpty() ? 1 : listaMatriculas.get(listaMatriculas.size() - 1).getIdMatricula() + 1;
+        // Calcula IDs
+        this.nextApoderadoId = calcularSiguienteId(listaApoderados, a -> a.getIdApoderado());
+        this.nextEstudianteId = calcularSiguienteId(listaEstudiantes, e -> e.getIdEstudiante());
+        this.nextProfesorId = calcularSiguienteId(listaProfesores, p -> p.getIdProfesor());
+        this.nextAulaId = calcularSiguienteId(listaAulas, a -> a.getIdAula());
+        this.nextMatriculaId = calcularSiguienteId(listaMatriculas, m -> m.getIdMatricula());
+    }
+    
+    // Helper genérico para calcular el siguiente ID (optimización)
+    private <T> int calcularSiguienteId(ArrayList<T> lista, java.util.function.ToIntFunction<T> getIdFunc) {
+        if (lista.isEmpty()) {
+            return 1;
+        }
+        return lista.stream().mapToInt(getIdFunc).max().orElse(0) + 1;
     }
 
-    // --- 5. Métodos de Negocio (Lógica de "Crear") ---
-    // (Estos son los métodos que la VISTA llamará)
+    // --- LÓGICA: GESTIÓN DE ESTUDIANTES ---
 
-    /**
-     * Registra un nuevo Apoderado, lo guarda en memoria y en el archivo .txt
-     */
-    public Apoderado registrarApoderado(String nombres, String apellidos, String dni, String telefono, String relacion) {
-        // 1. Crea el objeto
-        Apoderado nuevo = new Apoderado(nextApoderadoId, nombres, apellidos, dni, telefono, relacion);
-        // 2. Lo añade a la lista en memoria
-        this.listaApoderados.add(nuevo);
-        // 3. Pide al repositorio que guarde la lista COMPLETA en el .txt
-        this.apoderadoRepo.guardarApoderados(this.listaApoderados);
-        // 4. Incrementa el ID para el próximo
-        this.nextApoderadoId++;
-        // 5. Retorna el objeto creado
-        return nuevo;
-    }
-
-    /**
-     * Registra un nuevo Estudiante, lo guarda en memoria y en el archivo .txt
-     */
-    public Estudiante registrarEstudiante(String nombres, String apellidos, String dni, String fechaNac, int idApoderado) {
+    public Estudiante registrarEstudiante(String nombres, String apellidos, String dni, String fechaNac, int idApoderado) throws Exception {
+        if (buscarApoderadoPorId(idApoderado) == null) {
+            throw new Exception("Error: El Apoderado con ID " + idApoderado + " no existe.");
+        }
+        if (buscarEstudiantePorDni(dni) != null) {
+            throw new Exception("Error: Ya existe un estudiante con el DNI " + dni);
+        }
+        
         Estudiante nuevo = new Estudiante(nextEstudianteId, nombres, apellidos, dni, fechaNac, idApoderado);
         this.listaEstudiantes.add(nuevo);
         this.estudianteRepo.guardarEstudiantes(this.listaEstudiantes);
         this.nextEstudianteId++;
         return nuevo;
     }
-
-    /**
-     * Registra un nuevo Profesor, lo guarda en memoria y en el archivo .txt
-     */
-    public Profesor registrarProfesor(String nombres, String apellidos, String dni, String especialidad) {
-        Profesor nuevo = new Profesor(nextProfesorId, nombres, apellidos, dni, especialidad);
-        this.listaProfesores.add(nuevo);
-        this.profesorRepo.guardarProfesores(this.listaProfesores);
-        this.nextProfesorId++;
-        return nuevo;
-    }
-
-    /**
-     * Crea un nuevo Grado (Ej: "1ro Primaria"), lo guarda y persiste.
-     */
-    public Grado crearGrado(String nombre) {
-        Grado nuevo = new Grado(nextGradoId, nombre);
-        this.listaGrados.add(nuevo);
-        this.gradoRepo.guardarGrados(this.listaGrados);
-        this.nextGradoId++;
-        return nuevo;
-    }
-
-    /**
-     * Crea una nueva Sección (Ej: "A") y la asigna a un Grado y un Tutor.
-     */
-    public Seccion crearSeccion(String nombre, int idGrado, int idProfesorTutor) throws Exception {
-        // --- Lógica de Validación (¡Esto es el "Service"!) ---
-        if (buscarGradoPorId(idGrado) == null) {
-            throw new Exception("Error: El Grado con ID " + idGrado + " no existe.");
-        }
-        if (buscarProfesorPorId(idProfesorTutor) == null) {
-            throw new Exception("Error: El Profesor (Tutor) con ID " + idProfesorTutor + " no existe.");
-        }
-        // --- Fin de la Validación ---
-        
-        Seccion nuevo = new Seccion(nextSeccionId, nombre, idGrado, idProfesorTutor);
-        this.listaSecciones.add(nuevo);
-        this.seccionRepo.guardarSecciones(this.listaSecciones);
-        this.nextSeccionId++;
-        return nuevo;
-    }
-
-    /**
-     * Realiza el acto de Matrícula.
-     * Conecta un Estudiante con una Sección para un año.
-     */
-    public Matricula matricularEstudiante(int idEstudiante, int idSeccion, String anioAcademico) throws Exception {
-        // --- Lógica de Validación ---
-        if (buscarEstudiantePorId(idEstudiante) == null) {
-            throw new Exception("Error: El Estudiante con ID " + idEstudiante + " no existe.");
-        }
-        if (buscarSeccionPorId(idSeccion) == null) {
-            throw new Exception("Error: La Sección con ID " + idSeccion + " no existe.");
-        }
-        // Validar que el alumno no esté ya matriculado en este año
-        for (Matricula m : this.listaMatriculas) {
-            if (m.getIdEstudiante() == idEstudiante && m.getAnioAcademico().equals(anioAcademico) && m.getEstado().equals("ACTIVA")) {
-                throw new Exception("Error: El estudiante ya tiene una matrícula activa para el año " + anioAcademico);
-            }
-        }
-        // --- Fin de la Validación ---
-
-        String fechaHoy = LocalDate.now().toString(); // "YYYY-MM-DD"
-        String estado = "ACTIVA";
-
-        Matricula nueva = new Matricula(nextMatriculaId, idEstudiante, idSeccion, anioAcademico, fechaHoy, estado);
-        this.listaMatriculas.add(nueva);
-        this.matriculaRepo.guardarMatriculas(this.listaMatriculas);
-        this.nextMatriculaId++;
-        return nueva;
-    }
-
-    // --- 6. Métodos de Negocio (Lógica de "Obtener" y "Buscar") ---
-    // (Para que la VISTA pueda mostrar los datos)
-
-    public ArrayList<Apoderado> getTodosLosApoderados() {
-        return this.listaApoderados;
-    }
     
-    public ArrayList<Estudiante> getTodosLosEstudiantes() {
-        return this.listaEstudiantes;
-    }
-    
-    public ArrayList<Profesor> getTodosLosProfesores() {
-        return this.listaProfesores;
-    }
-    
-    public ArrayList<Grado> getTodosLosGrados() {
-        return this.listaGrados;
-    }
-    
-    public ArrayList<Seccion> getTodasLasSecciones() {
-        return this.listaSecciones;
-    }
-    
-    public ArrayList<Matricula> getTodasLasMatriculas() {
-        return this.listaMatriculas;
-    }
-    
-    // --- Métodos "Buscadores" (helpers) ---
-    
-    public Estudiante buscarEstudiantePorId(int id) {
+    public Estudiante buscarEstudiantePorDni(String dni) {
         for (Estudiante e : this.listaEstudiantes) {
-            if (e.getIdEstudiante() == id) {
+            if (e.getDni().equals(dni)) {
                 return e;
             }
         }
         return null; // No encontrado
     }
     
-    public Apoderado buscarApoderadoPorId(int id) {
+    public Apoderado registrarApoderado(String nombres, String apellidos, String dni, String telefono, String relacion) throws Exception {
+        if (buscarApoderadoPorDni(dni) != null) {
+            throw new Exception("Error: Ya existe un apoderado con el DNI " + dni);
+        }
+        Apoderado nuevo = new Apoderado(nextApoderadoId, nombres, apellidos, dni, telefono, relacion);
+        this.listaApoderados.add(nuevo);
+        this.apoderadoRepo.guardarApoderados(this.listaApoderados);
+        this.nextApoderadoId++;
+        return nuevo;
+    }
+    
+    public Apoderado buscarApoderadoPorDni(String dni) {
         for (Apoderado a : this.listaApoderados) {
-            if (a.getIdApoderado() == id) {
+            if (a.getDni().equals(dni)) {
                 return a;
             }
         }
-        return null; // No encontrado
+        return null;
+    }
+/**
+     * Registra un nuevo Profesor, lo guarda en memoria y en el archivo .txt
+     */
+    public Profesor registrarProfesor(String nombres, String apellidos, String dni, String especialidad) throws Exception {
+        // Validación simple
+        if (buscarProfesorPorDni(dni) != null) {
+            throw new Exception("Error: Ya existe un profesor con el DNI " + dni);
+        }
+        
+        Profesor nuevo = new Profesor(nextProfesorId, nombres, apellidos, dni, especialidad);
+        this.listaProfesores.add(nuevo);
+        this.profesorRepo.guardarProfesores(this.listaProfesores);
+        this.nextProfesorId++;
+        return nuevo;
     }
     
-    public Profesor buscarProfesorPorId(int id) {
+    public Profesor buscarProfesorPorDni(String dni) {
         for (Profesor p : this.listaProfesores) {
-            if (p.getIdProfesor() == id) {
+            if (p.getDni().equals(dni)) {
                 return p;
             }
         }
-        return null; // No encontrado
+        return null;
+    }
+    // --- LÓGICA: GESTIÓN ACADÉMICA ---
+    
+    public Aula crearAula(String grado, String seccion, int idProfesorTutor, int vacantes) throws Exception {
+        if (buscarProfesorPorId(idProfesorTutor) == null) {
+            throw new Exception("Error: El Profesor (Tutor) con ID " + idProfesorTutor + " no existe.");
+        }
+        // Validar que no exista un aula igual (mismo grado y seccion)
+        for (Aula a : this.listaAulas) {
+            if (a.getGrado().equalsIgnoreCase(grado) && a.getSeccion().equalsIgnoreCase(seccion)) {
+                throw new Exception("Error: El aula " + a.getNombreCompleto() + " ya existe.");
+            }
+        }
+        
+        Aula nueva = new Aula(nextAulaId, grado, seccion, idProfesorTutor, vacantes);
+        this.listaAulas.add(nueva);
+        this.aulaRepo.guardarAulas(this.listaAulas);
+        this.nextAulaId++;
+        return nueva;
     }
 
-    public Grado buscarGradoPorId(int id) {
-        for (Grado g : this.listaGrados) {
-            if (g.getIdGrado() == id) {
-                return g;
+    public ArrayList<Aula> getTodasLasAulas() {
+        return this.listaAulas;
+    }
+
+    // --- LÓGICA: PROCESO DE MATRÍCULA ---
+    
+    public Matricula matricularEstudiante(int idEstudiante, int idAula, String anioAcademico) throws Exception {
+        Estudiante est = buscarEstudiantePorId(idEstudiante);
+        Aula aula = buscarAulaPorId(idAula);
+        
+        if (est == null) throw new Exception("Error: El Estudiante no existe.");
+        if (aula == null) throw new Exception("Error: El Aula no existe.");
+        
+        // 1. Validar que el alumno no esté ya matriculado en este año
+        for (Matricula m : this.listaMatriculas) {
+            if (m.getIdEstudiante() == idEstudiante && m.getAnioAcademico().equals(anioAcademico) && m.getEstado().equals("ACTIVA")) {
+                throw new Exception("Error: El estudiante ya tiene una matrícula activa para el año " + anioAcademico);
             }
         }
-        return null; // No encontrado
+        
+        // 2. Validar VACANTES (¡La lógica clave!)
+        int vacantesDisponibles = getVacantesDisponibles(idAula);
+        if (vacantesDisponibles <= 0) {
+            throw new Exception("Error: No hay vacantes disponibles para el aula " + aula.getNombreCompleto());
+        }
+
+        String fechaHoy = LocalDate.now().toString(); // "YYYY-MM-DD"
+        String estado = "ACTIVA";
+
+        Matricula nueva = new Matricula(nextMatriculaId, idEstudiante, idAula, anioAcademico, fechaHoy, estado);
+        this.listaMatriculas.add(nueva);
+        this.matriculaRepo.guardarMatriculas(this.listaMatriculas);
+        this.nextMatriculaId++;
+        return nueva;
     }
     
-    public Seccion buscarSeccionPorId(int id) {
-        for (Seccion s : this.listaSecciones) {
-            if (s.getIdSeccion() == id) {
-                return s;
+    public Matricula anularMatricula(String dniEstudiante, String anio) throws Exception {
+        Estudiante est = buscarEstudiantePorDni(dniEstudiante);
+        if (est == null) throw new Exception("No se encontró estudiante con DNI " + dniEstudiante);
+        
+        Matricula matriculaActiva = null;
+        for (Matricula m : this.listaMatriculas) {
+            if (m.getIdEstudiante() == est.getIdEstudiante() && m.getAnioAcademico().equals(anio) && m.getEstado().equals("ACTIVA")) {
+                matriculaActiva = m;
+                break;
             }
         }
-        return null; // No encontrado
+        
+        if (matriculaActiva == null) {
+            throw new Exception("No se encontró matrícula activa para el DNI " + dniEstudiante + " en el año " + anio);
+        }
+        
+        // Modifica el estado
+        matriculaActiva.setEstado("ANULADA");
+        
+        // Persiste el cambio
+        this.matriculaRepo.guardarMatriculas(this.listaMatriculas);
+        return matriculaActiva;
     }
+    
+    // --- LÓGICA: REPORTES Y CONSULTAS ---
+    
+    /**
+     * Calcula las vacantes disponibles para un aula.
+     * @return vacantes totales - matrículas activas
+     */
+    public int getVacantesDisponibles(int idAula) {
+        Aula aula = buscarAulaPorId(idAula);
+        if (aula == null) return 0;
+        
+        int matriculadosActivos = 0;
+        for (Matricula m : this.listaMatriculas) {
+            if (m.getIdAula() == idAula && m.getEstado().equals("ACTIVA")) {
+                matriculadosActivos++;
+            }
+        }
+        return aula.getVacantesTotales() - matriculadosActivos;
+    }
+
+    /**
+     * Obtiene la Ficha de Matrícula activa de un estudiante por DNI y año.
+     */
+    public Matricula getFichaMatricula(String dniEstudiante, String anio) {
+        Estudiante est = buscarEstudiantePorDni(dniEstudiante);
+        if (est == null) return null;
+        
+        for (Matricula m : this.listaMatriculas) {
+            if (m.getIdEstudiante() == est.getIdEstudiante() && m.getAnioAcademico().equals(anio)) {
+                return m; // Retorna la primera que encuentra (activa o anulada)
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Reporte de alumnos matriculados en un aula específica.
+     */
+    public ArrayList<Estudiante> getAlumnosPorAula(int idAula) {
+        ArrayList<Estudiante> alumnos = new ArrayList<>();
+        for (Matricula m : this.listaMatriculas) {
+            // Solo matrículas activas de esa aula
+            if (m.getIdAula() == idAula && m.getEstado().equals("ACTIVA")) {
+                Estudiante e = buscarEstudiantePorId(m.getIdEstudiante());
+                if (e != null) {
+                    alumnos.add(e);
+                }
+            }
+        }
+        return alumnos;
+    }
+    
+    public ArrayList<Matricula> getMatriculasActivas(String anio) {
+        ArrayList<Matricula> activas = new ArrayList<>();
+        for (Matricula m : this.listaMatriculas) {
+            if (m.getAnioAcademico().equals(anio) && m.getEstado().equals("ACTIVA")) {
+                activas.add(m);
+            }
+        }
+        return activas;
+    }
+
+    // --- Métodos "Buscadores" (helpers) ---
+    
+    public Estudiante buscarEstudiantePorId(int id) {
+        return listaEstudiantes.stream().filter(e -> e.getIdEstudiante() == id).findFirst().orElse(null);
+    }
+    public Apoderado buscarApoderadoPorId(int id) {
+        return listaApoderados.stream().filter(a -> a.getIdApoderado() == id).findFirst().orElse(null);
+    }
+    public Profesor buscarProfesorPorId(int id) {
+        return listaProfesores.stream().filter(p -> p.getIdProfesor() == id).findFirst().orElse(null);
+    }
+    public Aula buscarAulaPorId(int id) {
+        return listaAulas.stream().filter(a -> a.getIdAula() == id).findFirst().orElse(null);
+    }
+
+    // (Getters para las listas, por si la VISTA los necesita)
+    public ArrayList<Apoderado> getTodosLosApoderados() { return this.listaApoderados; }
+    public ArrayList<Estudiante> getTodosLosEstudiantes() { return this.listaEstudiantes; }
+    public ArrayList<Profesor> getTodosLosProfesores() { return this.listaProfesores; }
 }
